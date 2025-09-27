@@ -30,3 +30,4 @@ COMMENT ON COLUMN public.installment_plans.advance_payment_amount IS 'Advance pa
 -- Note: No trigger updates needed as update_updated_at trigger will handle the new columns
 
 
+
