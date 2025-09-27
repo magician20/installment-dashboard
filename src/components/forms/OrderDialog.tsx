@@ -478,23 +478,9 @@ export function OrderDialog({ open, onOpenChange, order, onSubmit, title, descri
                 })()}
               </Label>
               <div className="col-span-3">
-                {order ? (
-                  <div className="h-10 px-3 py-2 border rounded-md bg-muted text-muted-foreground flex items-center">
-                    {formData.total_amount.toLocaleString()} EGP
-                  </div>
-                ) : (
-                  <Input
-                    id="total_amount"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.total_amount}
-                    onChange={(e) => setFormData(prev => ({ ...prev, total_amount: parseFloat(e.target.value) || 0 }))}
-                    placeholder="0.00"
-                    required
-                    disabled={formData.payment_method === 'installment' && !!selectedInstallmentPlanId}
-                  />
-                )}
+                <div className="h-10 px-3 py-2 border rounded-md bg-muted text-muted-foreground flex items-center">
+                  {formData.total_amount.toLocaleString()} EGP
+                </div>
               </div>
             </div>
             
