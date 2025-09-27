@@ -276,7 +276,7 @@
     "fixed": "Fixed",
     "selectInstallmentOptional": "Select installment (optional)",
     "noSpecificInstallment": "No specific installment",
-    "installmentNumber": "Installment #{{number}}",
+    "installmentNumber": "Installment #",
     "due": "Due",
     "optionalReceiptNumber": "Optional receipt number",
     "optionalPaymentNotes": "Optional payment notes"

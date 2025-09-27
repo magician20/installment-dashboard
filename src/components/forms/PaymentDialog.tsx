@@ -196,7 +196,14 @@ export function PaymentDialog({ open, onOpenChange, payment, onSubmit, title, de
                 </Label>
                 <Select
                   value={formData.installment_id || 'none'}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, installment_id: value === 'none' ? undefined : value }))}
+                  onValueChange={(value) => {
+                    const selectedInstallment = installments.find(inst => inst.id === value);
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      installment_id: value === 'none' ? undefined : value,
+                      amount: selectedInstallment ? selectedInstallment.amount : prev.amount
+                    }));
+                  }}
                 >
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder={t('payments.selectInstallmentOptional')} />
@@ -207,7 +214,7 @@ export function PaymentDialog({ open, onOpenChange, payment, onSubmit, title, de
                       .filter(inst => inst.order_id === formData.order_id && inst.status !== 'paid')
                       .map((installment) => (
                       <SelectItem key={installment.id} value={installment.id}>
-                        {t('payments.installmentNumber', { number: installment.installment_number })} - {installment.amount.toLocaleString()} EGP ({t('payments.due')}: {new Date(installment.due_date).toLocaleDateString()})
+                        {t('payments.installmentNumber')}{installment.installment_number} - {installment.amount.toLocaleString()} EGP ({t('payments.due')}: {new Date(installment.due_date).toLocaleDateString()})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -229,8 +236,8 @@ export function PaymentDialog({ open, onOpenChange, payment, onSubmit, title, de
                 className="col-span-3"
                 placeholder="0.00"
                 required
-                readOnly={!!prePaymentData}
-                style={prePaymentData ? { backgroundColor: '#f3f4f6', cursor: 'not-allowed' } : {}}
+                readOnly={!!prePaymentData || !!formData.installment_id}
+                style={(prePaymentData || formData.installment_id) ? { backgroundColor: '#f3f4f6', cursor: 'not-allowed' } : {}}
               />
             </div>
             

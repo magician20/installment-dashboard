@@ -276,7 +276,7 @@
     "fixed": "ثابتة",
     "selectInstallmentOptional": "اختر القسط (اختياري)",
     "noSpecificInstallment": "لا يوجد قسط محدد",
-    "installmentNumber": "القسط رقم {{number}}",
+    "installmentNumber": "القسط رقم ",
     "due": "مستحق",
     "optionalReceiptNumber": "رقم الإيصال (اختياري)",
     "optionalPaymentNotes": "ملاحظات الدفع (اختيارية)"
