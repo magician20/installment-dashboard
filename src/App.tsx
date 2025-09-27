@@ -23,7 +23,7 @@ function AppWithLanguage() {
   useLanguage(); // Initialize language direction
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/installment-dashboard">
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route path="/" element={
