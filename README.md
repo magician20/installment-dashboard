@@ -60,3 +60,27 @@ git add .
 git commit -m "Configure GitHub Pages deployment"
 git push origin main
 ```
+Step 2: Enable GitHub Pages in Repository Settings
+- Go to your GitHub repository: https://github.com/magician20/installment-dashboard
+- Click on Settings tab
+- Scroll down to Pages section in the left sidebar
+- Under Source, select GitHub Actions
+- Save the settings
+
+Step 3: Monitor the Deployment
+- Go to the Actions tab in your repository
+- You should see a workflow run called "Deploy to GitHub Pages"
+- Click on it to monitor the deployment progress
+- The deployment will take 2-5 minutes
+
+Step 4: Access Your Deployed Application
+- Once the deployment is complete, your application will be available at:
+- (https://magician20.github.io/installment-dashboard/)
+
+
+Local Testing:
+To test your production build locally:
+```sh
+npm run build:gh-pages
+npm run preview:gh-pages
+```
