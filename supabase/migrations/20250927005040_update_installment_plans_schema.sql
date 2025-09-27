@@ -33,3 +33,4 @@ COMMENT ON COLUMN public.installment_plans.advance_payment_amount IS 'Advance pa
 
 
 
+

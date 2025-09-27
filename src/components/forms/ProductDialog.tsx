@@ -28,6 +28,7 @@ export function ProductDialog({ open, onOpenChange, product, onSubmit, title, de
     name: '',
     description: '',
     price: 0,
+    cost: 0,
     quantity: 0,
     category_id: '',
   });
@@ -39,6 +40,7 @@ export function ProductDialog({ open, onOpenChange, product, onSubmit, title, de
         name: product.name,
         description: product.description || '',
         price: product.price,
+        cost: product.cost,
         quantity: product.quantity,
         category_id: product.category_id,
       });
@@ -47,6 +49,7 @@ export function ProductDialog({ open, onOpenChange, product, onSubmit, title, de
         name: '',
         description: '',
         price: 0,
+        cost: 0,
         quantity: 0,
         category_id: '',
       });
@@ -55,7 +58,7 @@ export function ProductDialog({ open, onOpenChange, product, onSubmit, title, de
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.category_id || formData.price <= 0) return;
+    if (!formData.name.trim() || !formData.category_id || formData.price <= 0 || formData.cost <= 0) return;
 
     setLoading(true);
     const result = await onSubmit(formData);
@@ -73,6 +76,7 @@ export function ProductDialog({ open, onOpenChange, product, onSubmit, title, de
         name: '',
         description: '',
         price: 0,
+        cost: 0,
         quantity: 0,
         category_id: '',
       });
@@ -156,6 +160,23 @@ export function ProductDialog({ open, onOpenChange, product, onSubmit, title, de
             </div>
             
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="cost" className="ltr:text-right rtl:text-left">
+                {t('products.cost')}
+              </Label>
+              <Input
+                id="cost"
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.cost}
+                onChange={(e) => setFormData(prev => ({ ...prev, cost: parseFloat(e.target.value) || 0 }))}
+                className="col-span-3"
+                placeholder="0.00"
+                required
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="quantity" className="ltr:text-right rtl:text-left">
                 {t('products.quantity')}
               </Label>
@@ -183,7 +204,7 @@ export function ProductDialog({ open, onOpenChange, product, onSubmit, title, de
             </Button>
             <Button 
               type="submit" 
-              disabled={loading || !formData.name.trim() || !formData.category_id || formData.price <= 0}
+              disabled={loading || !formData.name.trim() || !formData.category_id || formData.price <= 0 || formData.cost <= 0}
             >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {product ? t('common.edit') : t('common.create')}

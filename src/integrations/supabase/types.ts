@@ -72,6 +72,7 @@ export type Database = {
           name: string
           description: string | null
           price: number
+          cost: number
           quantity: number
           category_id: string
           created_at: string | null

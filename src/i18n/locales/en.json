@@ -94,6 +94,7 @@
     "name": "Name",
     "description": "Description",
     "price": "Price",
+    "cost": "Cost",
     "quantity": "Quantity",
     "category": "Category",
     "na": "N/A",
