@@ -45,5 +45,18 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+🚀 Complete GitHub Pages Deployment Guide:
 
+✅ What I've Configured:
+Vite Configuration: Updated vite.config.ts to use the correct base path for GitHub Pages
+Build Scripts: Added build:gh-pages and preview:gh-pages scripts to package.json
+GitHub Actions Workflow: Created .github/workflows/deploy.yml for automated deployment
+Local Testing: Verified the build process works correctly
+
+ Step-by-Step Deployment Instructions:
+Step 1: Commit and Push Your Changes
+```sh
+git add .
+git commit -m "Configure GitHub Pages deployment"
+git push origin main
+```
