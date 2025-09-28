@@ -219,6 +219,7 @@
     "status": "Status",
     "statusDelivered": "Delivered",
     "statusProcessing": "Processing",
+    "statusIn_progress": "In Progress",
     "statusShipped": "Shipped",
     "statusPending": "Pending",
     "statusCancelled": "Cancelled",

@@ -219,6 +219,7 @@
     "status": "الحالة",
     "statusDelivered": "تم التوصيل",
     "statusProcessing": "قيد المعالجة",
+    "statusIn_progress": "قيد المعالجة",
     "statusShipped": "تم الشحن",
     "statusPending": "قيد الانتظار",
     "statusCancelled": "ملغي",
