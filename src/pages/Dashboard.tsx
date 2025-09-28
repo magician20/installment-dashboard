@@ -84,10 +84,19 @@ export default function Dashboard() {
         </div>
 
         {/* Financial Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <StatsCard 
             title={t('dashboard.totalSales')} 
             value={formatCurrency(stats.totalSales)} 
+          />
+          <StatsCard 
+            title={t('dashboard.totalCost')} 
+            value={formatCurrency(stats.totalCost)} 
+          />
+          <StatsCard 
+            title={t('dashboard.profit')} 
+            value={formatCurrency(stats.profit)} 
+            className={stats.profit >= 0 ? "text-green-600" : "text-red-600"}
           />
           <StatsCard 
             title={t('dashboard.totalPaidInstallments')} 

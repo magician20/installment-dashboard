@@ -48,6 +48,8 @@
     "totalSales": "Total Sales",
     "totalPaidInstallments": "Total Paid Installments",
     "remainingAmount": "Remaining Amount",
+    "totalCost": "Total Cost",
+    "profit": "Profit",
     "recentOrders": "Recent Orders",
     "pendingInstallmentsList": "Pending Installments",
     "noRecentOrders": "No recent orders found.",

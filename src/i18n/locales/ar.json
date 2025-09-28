@@ -48,6 +48,8 @@
     "totalSales": "إجمالي المبيعات",
     "totalPaidInstallments": "إجمالي الأقساط المدفوعة",
     "remainingAmount": "المبلغ المتبقي",
+    "totalCost": "إجمالي التكلفة",
+    "profit": "الربح",
     "recentOrders": "الطلبات الأخيرة",
     "pendingInstallmentsList": "الأقساط المعلقة",
     "noRecentOrders": "لم يتم العثور على طلبات حديثة.",

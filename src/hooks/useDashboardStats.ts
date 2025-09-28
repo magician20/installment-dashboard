@@ -11,6 +11,8 @@ export interface DashboardStats {
   totalSales: number;
   totalPaidInstallments: number;
   totalRemainingAmount: number;
+  totalCost: number;
+  profit: number;
   recentOrders: Array<{
     id: string;
     customer_name: string;
@@ -38,6 +40,8 @@ export function useDashboardStats() {
     totalSales: 0,
     totalPaidInstallments: 0,
     totalRemainingAmount: 0,
+    totalCost: 0,
+    profit: 0,
     recentOrders: [],
     pendingInstallmentsList: [],
   });
@@ -56,6 +60,7 @@ export function useDashboardStats() {
         paidInstallmentsResult,
         allInstallmentsResult,
         paymentsResult,
+        productsCostResult,
         recentOrdersResult,
         pendingInstallmentsResult,
       ] = await Promise.all([
@@ -67,6 +72,7 @@ export function useDashboardStats() {
         supabase.from('installments').select('amount').eq('status', 'paid'),
         supabase.from('installments').select('amount'),
         supabase.from('payments').select('amount'),
+        supabase.from('products').select('cost'),
         supabase
           .from('orders')
           .select(`
@@ -87,6 +93,7 @@ export function useDashboardStats() {
             status,
             installment_number,
             orders!inner(
+              customer_id,
               customers!inner(first_name, last_name)
             )
           `)
@@ -106,10 +113,16 @@ export function useDashboardStats() {
       const totalPaymentsAmount = paymentsResult.data?.reduce((sum, payment) => sum + Number(payment.amount), 0) || 0;
       const totalRemainingAmount = totalInstallmentsAmount - totalPaymentsAmount;
 
+      // Calculate total cost of products
+      const totalCost = productsCostResult.data?.reduce((sum, product) => sum + Number(product.cost), 0) || 0;
+
+      // Calculate profit (total sales - total cost)
+      const profit = totalSales - totalCost;
+
       // Transform recent orders
       const recentOrders = recentOrdersResult.data?.map(order => ({
         id: order.id,
-        customer_name: `${order.customers.first_name} ${order.customers.last_name}`,
+        customer_name: `${order.customers?.first_name || ''} ${order.customers?.last_name || ''}`,
         total_amount: Number(order.total_amount),
         status: order.status,
         order_date: order.order_date,
@@ -122,7 +135,7 @@ export function useDashboardStats() {
         amount: Number(installment.amount),
         due_date: installment.due_date,
         status: installment.status,
-        installment_number: installment.installment_number,
+        installment_number: Number(installment.installment_number),
       })) || [];
 
       setStats({
@@ -134,6 +147,8 @@ export function useDashboardStats() {
         totalSales,
         totalPaidInstallments,
         totalRemainingAmount: Math.max(0, totalRemainingAmount),
+        totalCost,
+        profit,
         recentOrders,
         pendingInstallmentsList,
       });

@@ -106,7 +106,7 @@ export function usePayments() {
           setPayments(prev => [newPayment, ...prev]);
           toast({
             title: "Payment processed",
-            description: `Payment recorded successfully. ${result.remaining_amount > 0 ? `Remaining: ${result.remaining_amount.toLocaleString()} EGP` : 'Installment fully paid!'}`,
+            description: `Payment recorded successfully. ${result.remaining_amount > 0 ? `Remaining: $${result.remaining_amount}` : 'Installment fully paid!'}`,
           });
         }
 
