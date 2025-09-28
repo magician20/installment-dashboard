@@ -285,6 +285,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      //77
       create_installments_for_order: {
         Args: {
           p_order_id: string
@@ -293,6 +294,7 @@ export type Database = {
         }
         Returns: Json
       }
+      //284
       process_payment: {
         Args: {
           p_order_id: string
@@ -304,15 +306,59 @@ export type Database = {
         }
         Returns: Json
       }
+      //152
       refresh_installment_late_status: {
         Args: {
           p_installment_id: string
         }
         Returns: Json
       }
+      //24
       update_overdue_installments: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      // New financial metrics functions
+      get_financial_metrics: {
+        Args: Record<PropertyKey, never>
+        Returns: Array<{
+          total_sales: number
+          total_cost: number
+          profit: number
+          total_paid_installments: number
+          remaining_installments_amount: number
+          total_orders: number
+          total_installments: number
+          pending_installments_count: number
+          total_products: number
+          total_customers: number
+          total_categories: number
+        }>
+      }
+      get_recent_orders: {
+        Args: {
+          limit_count?: number
+        }
+        Returns: Array<{
+          id: string
+          customer_name: string
+          total_amount: number
+          status: string
+          order_date: string
+        }>
+      }
+      get_pending_installments: {
+        Args: {
+          limit_count?: number
+        }
+        Returns: Array<{
+          id: string
+          customer_name: string
+          amount: number
+          due_date: string
+          status: string
+          installment_number: string
+        }>
       }
     }
     Enums: {

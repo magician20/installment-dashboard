@@ -26,7 +26,7 @@ export interface DashboardStats {
     amount: number;
     due_date: string;
     status: string;
-    installment_number: number;
+    installment_number: string;
   }>;
 }
 
@@ -50,107 +50,52 @@ export function useDashboardStats() {
 
   const fetchDashboardStats = async () => {
     try {
-      // Fetch all stats in parallel
+      // Fetch financial metrics using the function
+      const { data: financialData, error: financialError } = await supabase
+        .rpc('get_financial_metrics');
+
+      if (financialError) throw financialError;
+
+      // Fetch recent orders and installments
       const [
-        categoriesResult,
-        productsResult,
-        customersResult,
-        ordersResult,
-        installmentsResult,
-        paidInstallmentsResult,
-        allInstallmentsResult,
-        paymentsResult,
-        productsCostResult,
-        recentOrdersResult,
-        pendingInstallmentsResult,
+        { data: recentOrdersData, error: recentOrdersError },
+        { data: pendingInstallmentsData, error: pendingInstallmentsError }
       ] = await Promise.all([
-        supabase.from('categories').select('id', { count: 'exact', head: true }),
-        supabase.from('products').select('id', { count: 'exact', head: true }),
-        supabase.from('customers').select('id', { count: 'exact', head: true }),
-        supabase.from('orders').select('total_amount'),
-        supabase.from('installments').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-        supabase.from('installments').select('amount').eq('status', 'paid'),
-        supabase.from('installments').select('amount'),
-        supabase.from('payments').select('amount'),
-        supabase.from('products').select('cost'),
-        supabase
-          .from('orders')
-          .select(`
-            id,
-            total_amount,
-            status,
-            order_date,
-            customers!inner(first_name, last_name)
-          `)
-          .order('created_at', { ascending: false })
-          .limit(5),
-        supabase
-          .from('installments')
-          .select(`
-            id,
-            amount,
-            due_date,
-            status,
-            installment_number,
-            orders!inner(
-              customer_id,
-              customers!inner(first_name, last_name)
-            )
-          `)
-          .eq('status', 'pending')
-          .order('due_date', { ascending: true })
-          .limit(5),
+        supabase.rpc('get_recent_orders', { limit_count: 5 }),
+        supabase.rpc('get_pending_installments', { limit_count: 5 })
       ]);
 
-      // Calculate total sales
-      const totalSales = ordersResult.data?.reduce((sum, order) => sum + Number(order.total_amount), 0) || 0;
+      if (recentOrdersError) throw recentOrdersError;
+      if (pendingInstallmentsError) throw pendingInstallmentsError;
 
-      // Calculate total paid installments amount
-      const totalPaidInstallments = paidInstallmentsResult.data?.reduce((sum, installment) => sum + Number(installment.amount), 0) || 0;
-
-      // Calculate total remaining amount (total installments - total payments)
-      const totalInstallmentsAmount = allInstallmentsResult.data?.reduce((sum, installment) => sum + Number(installment.amount), 0) || 0;
-      const totalPaymentsAmount = paymentsResult.data?.reduce((sum, payment) => sum + Number(payment.amount), 0) || 0;
-      const totalRemainingAmount = totalInstallmentsAmount - totalPaymentsAmount;
-
-      // Calculate total cost of products
-      const totalCost = productsCostResult.data?.reduce((sum, product) => sum + Number(product.cost), 0) || 0;
-
-      // Calculate profit (total sales - total cost)
-      const profit = totalSales - totalCost;
-
-      // Transform recent orders
-      const recentOrders = recentOrdersResult.data?.map(order => ({
-        id: order.id,
-        customer_name: `${order.customers?.first_name || ''} ${order.customers?.last_name || ''}`,
-        total_amount: Number(order.total_amount),
-        status: order.status,
-        order_date: order.order_date,
-      })) || [];
-
-      // Transform pending installments
-      const pendingInstallmentsList = pendingInstallmentsResult.data?.map(installment => ({
-        id: installment.id,
-        customer_name: `${installment.orders.customers.first_name} ${installment.orders.customers.last_name}`,
-        amount: Number(installment.amount),
-        due_date: installment.due_date,
-        status: installment.status,
-        installment_number: Number(installment.installment_number),
-      })) || [];
+      const metrics = financialData?.[0] as any || {};
 
       setStats({
-        totalCategories: categoriesResult.count || 0,
-        totalProducts: productsResult.count || 0,
-        totalCustomers: customersResult.count || 0,
-        totalOrders: ordersResult.data?.length || 0,
-        pendingInstallments: installmentsResult.count || 0,
-        totalSales,
-        totalPaidInstallments,
-        totalRemainingAmount: Math.max(0, totalRemainingAmount),
-        totalCost,
-        profit,
-        recentOrders,
-        pendingInstallmentsList,
+        totalCategories: Number(metrics?.total_categories) || 0,
+        totalProducts: Number(metrics?.total_products) || 0,
+        totalCustomers: Number(metrics?.total_customers) || 0,
+        totalOrders: Number(metrics?.total_orders) || 0,
+        pendingInstallments: Number(metrics?.pending_installments_count) || 0,
+        totalSales: Number(metrics?.total_sales) || 0,
+        totalPaidInstallments: Number(metrics?.total_paid_installments) || 0,
+        totalRemainingAmount: Number(metrics?.remaining_installments_amount) || 0,
+        totalCost: Number(metrics?.total_cost) || 0,
+        profit: Number(metrics?.profit) || 0,
+        recentOrders: recentOrdersData?.map(order => ({
+          id: order.id,
+          customer_name: order.customer_name,
+          total_amount: Number(order.total_amount),
+          status: order.status,
+          order_date: order.order_date,
+        })) || [],
+        pendingInstallmentsList: pendingInstallmentsData?.map(installment => ({
+          id: installment.id,
+          customer_name: installment.customer_name,
+          amount: Number(installment.amount),
+          due_date: installment.due_date,
+          status: installment.status,
+          installment_number: installment.installment_number,
+        })) || [],
       });
     } catch (error: any) {
       toast({
